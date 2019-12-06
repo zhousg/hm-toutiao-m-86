@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 
 // 路由级别组件
 const Layout = () => import('@/views/Layout')
@@ -24,7 +25,7 @@ const routes = [
     component: Layout,
     children: [
       // 首页
-      { path: '/', name: 'home', component: Home },
+      { path: '/', name: 'home', component: Home, meta: { isKeepAlive: true } },
       // 问答
       { path: '/question', name: 'question', component: Question },
       // 视频
@@ -44,11 +45,20 @@ const routes = [
   // 搜索结果
   { path: '/search/result', name: 'search-result', component: SearchResult },
   // 文章详情
-  { path: '/article', name: 'article', component: Article }
+  { path: '/article', name: 'article', component: Article, meta: { isKeepAlive: true } }
 ]
 
 const router = new VueRouter({
   routes
+})
+
+// 跳转路由前：个人中心 /user 编辑资料 /user/profile  小智同学 /user/chat 判断登录状态
+router.beforeEach((to, from, next) => {
+  const { user } = store.state
+  // 当你访问的是以上三个页面中的一个，并且此时没有做登录，拦截到登录页面（回跳）
+  const loginConfig = { path: '/login', query: { redirectUrl: to.path } }
+  if (to.path.startsWith('/user') && !user.token) return next(loginConfig)
+  next()
 })
 
 export default router
