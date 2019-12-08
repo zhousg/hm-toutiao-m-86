@@ -45,7 +45,7 @@ const routes = [
   // 搜索结果
   { path: '/search/result', name: 'search-result', component: SearchResult },
   // 文章详情
-  { path: '/article', name: 'article', component: Article, meta: { isKeepAlive: true } }
+  { path: '/article/:id', name: 'article', component: Article, meta: { isKeepAlive: true } }
 ]
 
 const router = new VueRouter({
